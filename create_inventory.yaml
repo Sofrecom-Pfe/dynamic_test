@@ -1,0 +1,26 @@
+---
+- name: Generate inventory YAML file
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Load JSON data from file
+      slurp:
+        src: /root/ansible/json_files/file1.json
+      register: hosts_file
+
+    - name: Parse JSON data
+      set_fact:
+        hosts_data: "{{ hosts_file.content | b64decode | from_json }}"
+       
+    - name: Generate inventory file
+      copy:
+        content: |
+          [workers]
+          {% for host in hosts_data | unique(attribute='Hostname') %}
+          {% if host['Hostname'] is defined %}
+          {{ host['Hostname'] }} ansible_host={{ host['Source  ip address Mask'] }}
+          {% endif %}
+          {% endfor %}
+        dest: host.ini    
+

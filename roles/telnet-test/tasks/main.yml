@@ -1,0 +1,22 @@
+---
+# tasks file for telnet-test
+- name: Execute Telnet command and store output in fact
+  become: true
+  shell: |
+    output=$(echo -e "open {{ your_telnet_host }} {{ your_telnet_port }} \nwait 1\nquit" | telnet)
+    echo "Telnet output: $output"
+  register: telnet_output
+
+- name: Store Telnet output in fact
+  set_fact:
+    telnet_output: "{{ telnet_output.stdout_lines[-1] }}"    
+    telnet_output_connection: "{{ telnet_output.stdout_lines[1] }}"     
+    cacheable: yes
+    
+- name: Filter and store facts
+  set_fact:
+    filtered_facts:
+      hostname: "{{ ansible_hostname }}"
+      os: "{{ ansible_distribution }}"
+      cpu_count: "{{ ansible_processor_count }}"
+      memory_mb: "{{ ansible_memory_mb['real']['total'] }}"

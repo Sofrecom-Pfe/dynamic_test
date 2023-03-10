@@ -1,0 +1,26 @@
+---
+# tasks file for prerequis
+- name: Check if Telnet is installed
+  stat:
+    path: /usr/bin/telnet
+  register: telnet_installed
+  ignore_errors: true
+  
+- name: Install Telnet if it's not installed
+  yum:
+    name: telnet
+    state: present
+  when: telnet_installed.stat.exists == false
+  
+- name: Check if Curl is installed
+  stat:
+    path: /usr/bin/curl
+  register: curl_installed
+  ignore_errors: true
+  
+- name: Install Curl if it's not installed
+  yum:
+    name: curl
+    state: present
+  when: curl_installed.stat.exists == false
+

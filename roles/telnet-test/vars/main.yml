@@ -1,0 +1,9 @@
+---
+# vars file for telnet-test
+
+your_telnet_host : 10.0.0.1
+your_telnet_port : 80
+dest_path : /root/report
+file_name : /root/ansible/report_{{ ansible_hostname }}_{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}.txt
+
+

@@ -1,0 +1,61 @@
+- name: Execute Telnet command to destination IP and port
+  hosts: workers
+  become: true
+  gather_facts: true
+
+  tasks:
+ 
+  - name: copy JSON file
+    copy:
+      src: /root/ansible/json_files/file1.json
+      dest: /root/ansible/json_files/file1.json
+     
+  - name: Get JSON file
+    slurp:
+      src: /root/ansible/json_files/file1.json
+    register: json_file
+
+  - name: Parse JSON file
+    set_fact:
+      test_cases: "{{ json_file.content | b64decode | from_json }}"
+
+
+  - name: Execute Telnet command to destination IP and port
+    shell: |
+      output=$(echo -e "open {{ item['Destination ip address Mask'] }} {{ item['Port'] }} \nwait 1\nquit" | telnet)
+      echo "Telnet output: $output"
+    register: telnet_output
+    with_items: "{{ test_cases }}"
+    
+ # - name: Store Telnet output in fact
+ #   set_fact:
+ #     telnet_output: "{{ *.telnet_output.stdout_lines[-1] }}"    
+ #     telnet_output_connection: "{{ *.telnet_output.stdout_lines[1] }}"     
+ #     cacheable: yes
+ 
+  - name: Store Telnet output in fact
+    set_fact:
+      telnet_output1: "{{ telnet_output.results | map(attribute='stdout_lines') | flatten }}"
+    with_items: "{{ groups['all'] }}"
+
+    
+  - name: Generate report
+    set_fact:
+      report: |
+        Facts for {{ inventory_hostname }}:
+        telnet connection status  : {{ telnet_output1 }} 
+        
+  - name: Write report to file
+    copy:
+      content: "{{ report }}"
+      dest: "/root/ansible/telnet_output.txt"
+      backup: yes      
+
+  - name: Save output to local machine
+    fetch:
+      src: "/root/ansible/telnet_output.txt"
+      dest: "/root/ansible/json_files/"
+      flat: yes
+      fail_on_missing: yes
+    with_items: "{{ telnet_output.results }}"
+

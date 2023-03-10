@@ -1,0 +1,10 @@
+---
+# tasks file for fetch
+- name: Fetch report from remote machine
+  fetch:
+    src: "/root/ansible/report_{{ ansible_hostname }}_{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}.txt"
+    dest: "/root/report/"
+    flat: yes
+    fail_on_missing: yes
+
+

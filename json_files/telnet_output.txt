@@ -1,0 +1,2 @@
+Facts for worker1:
+telnet connection status  : ['Telnet output: telnet> Trying 140.82.121.4...', 'Connected to github.com.', "Escape character is '^]'.", 'Telnet output: telnet> Trying 157.240.21.35...', 'Connected to facebook.com.', "Escape character is '^]'.", 'Telnet output: telnet> Trying 142.250.179.78...', 'Connected to google.com.', "Escape character is '^]'."] 

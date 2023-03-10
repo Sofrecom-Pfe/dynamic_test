@@ -1,0 +1,17 @@
+---
+# tasks file for reports
+- name: Generate report
+  set_fact:
+    report: |
+      Facts for {{ inventory_hostname }}:
+      telnet connection status  : {{ telnet_output_connection }}
+      Hostname: {{ filtered_facts.hostname }}
+      Operating System: {{ filtered_facts.os }}
+      CPU Count: {{ filtered_facts.cpu_count }}
+      Memory: {{ filtered_facts.memory_mb }} MB
+
+- name: Write report to file
+  copy:
+    content: "{{ report }}"
+    dest: "{{ file_name }}"
+    backup: yes

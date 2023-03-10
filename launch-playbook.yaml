@@ -1,0 +1,15 @@
+# Playbook to call multiple roles to configure systems
+- name: Configure systems
+  hosts: workers 
+  become: yes
+
+  tasks:
+
+- name: Call Roles 
+  hosts: workers 
+  roles:
+   - prerequis
+   - telnet-test
+   - reports
+   - fetch
+
