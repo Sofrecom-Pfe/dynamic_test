@@ -1,0 +1,13 @@
+---
+- name: Run Python script and save output to file
+  hosts: localhost
+  tasks:
+    - name: Run Python script
+      command: python /root/ansible/json_files/script.py
+      register: script_output
+
+    - name: Save output to file
+      copy:
+        content: "{{ script_output.stdout }}"
+        dest: /root/ansible/host.ini
+
