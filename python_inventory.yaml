@@ -3,11 +3,11 @@
   hosts: localhost
   tasks:
     - name: Run Python script
-      command: python /root/ansible/json_files/script.py
+      command: python /root/ansible/render_yaml.py
       register: script_output
 
     - name: Save output to file
       copy:
         content: "{{ script_output.stdout }}"
-        dest: /root/ansible/host.ini
+        dest: /root/ansible/host2.yaml
 
